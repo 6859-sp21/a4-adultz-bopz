@@ -8,8 +8,23 @@
 </head>
 
 <body>
-    <section>
-        <h1>hello world</h1>
+    <section id="header" class="header-section">
+        <h1>Adultz Bops</h1>
+        <h4>6.859 Interactive Data Visualization</h4>
+        <p>Shannen Wu, Jessican Yin, Nico Salinas</p>
+
+    </section>
+    <section id="data-input">
+        <div>Select an Artist:</div>
+        <select name='artist' id='artist-dropdown' autocomplete required>
+            <option value="a">a</option>
+            <option value="b">b</option>
+        </select>
+        <button>Enter</button>
+
+    </section>
+    <section id="data-viz">
+        <div id="wordcloud" style="width:420px;height:420px;"></div>
     </section>
 </body>
 
