@@ -4,8 +4,10 @@
     <title>adultz bopz!</title>
     <link href='./styles.css' rel='stylesheet' />
     <script src="https://d3js.org/d3.v6.js"></script>
+    <script src="https://d3js.org/d3-hierarchy.v2.min.js"></script>
     <script src='./main.js' module></script>
     <script src='./artistdropdown.js' module></script>
+    <script src='./circle-renderer.js' module></script>
 </head>
 
 <body>
@@ -22,9 +24,13 @@
         <button>Enter</button>
 
     </section>
+
+    <section id='circle-pack'></section>
+
     <section id="data-viz">
         <div id="wordcloud" style="width:420px;height:420px;"></div>
     </section>
+
 </body>
 
 </html>
