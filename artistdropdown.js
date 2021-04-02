@@ -1,7 +1,5 @@
 window.addEventListener("DOMContentLoaded", async () => {
-  console.log('Done loading DOM...')
-
-  const csvData = await d3.csv("https://raw.githubusercontent.com/the-pudding/data/master/kidz-bop/KB_censored-lyrics.csv");
+  const csvData = await genRawData();
 
   let artistList = extractArtistsNameJSON(csvData);
   convertToDropdown(artistList);
@@ -9,24 +7,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 
-const extractArtistsNameJSON = (dataset) => {
-  let uniqueArtists = new Set();
-  dataset.map((item) => uniqueArtists.add(item.ogArtist));
-  let artistList = [];
-  uniqueArtists.forEach((artist) => {
-    artistList.push({
-      text: artist,
-      value: artist
-    });
-  });
-
-  const artistComparator = (a, b) => {
-    a = a.text.toLowerCase();
-    b = b.text.toLowerCase();
-    return (a < b) ? -1 : (a > b) ? 1 : 0;
-  }
-
-  return artistList.sort(artistComparator);
+const extractArtistsNameJSON = (data) => {
+  return Array.from(d3.group(data, d => d.ogArtist)).map((item) => item[0]).sort();
 }
 
 const convertToDropdown = (artistList) => {
@@ -34,8 +16,8 @@ const convertToDropdown = (artistList) => {
   artistList.map((artist, idx) => {
     let optionElem = document.createElement("option");
     optionElem.setAttribute("id", "artist-" + idx);
-    optionElem.setAttribute("value", artist.value);
-    optionElem.textContent = artist.text;
+    optionElem.setAttribute("value", artist);
+    optionElem.textContent = artist;
     dropdownRef.appendChild(optionElem);
   });
 }

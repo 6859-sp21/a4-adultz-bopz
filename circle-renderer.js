@@ -1,14 +1,6 @@
 window.addEventListener("DOMContentLoaded", async () => {
-  const csvData = await d3.csv("https://raw.githubusercontent.com/the-pudding/data/master/kidz-bop/KB_censored-lyrics.csv");
-  
-  let groupedData = Array.from(d3.group(csvData, (d) => d.ogArtist)).map((item) => {
-    return ({
-      name: item[0],
-      children: item[1],
-    });
-  });
-  
-  makeCircle({"name": "artists", "children": groupedData});
+  let nestedData = await genNestedData();  
+  makeCircle({"name": "artists", "children": nestedData});
 });
 
 const width = 500;
