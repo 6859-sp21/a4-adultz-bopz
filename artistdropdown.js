@@ -16,8 +16,8 @@ const convertToDropdown = (artistList) => {
   artistList.map((artist, idx) => {
     let optionElem = document.createElement("option");
     optionElem.setAttribute("id", "artist-" + idx);
-    optionElem.setAttribute("value", artist.value);
-    optionElem.textContent = artist.text;
+    optionElem.setAttribute("value", artist);
+    optionElem.textContent = artist;
     dropdownRef.appendChild(optionElem);
   });
 }
