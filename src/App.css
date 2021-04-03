@@ -1,0 +1,18 @@
+@import url("https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap");
+:root {
+  --dark: #212121;
+  --light-text: #ececec;
+}
+
+body {
+  background-color: var(--dark);
+  font-family: "Libre Caslon Text", serif;
+  color: var(--light-text);
+  margin: 0;
+  overflow-x: hidden;
+}
+
+.header-section {
+  text-align: center;
+  padding: 36px;
+}
