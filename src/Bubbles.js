@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import * as d3 from "d3";
-import { genNestedData } from "./data-transform";
+import { genNestedData } from "./utils/data-transform";
 
 const width = 500;
 const height = 500;

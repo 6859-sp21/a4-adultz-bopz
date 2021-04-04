@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 
-const genRawData = async () => {
+export const genRawData = async () => {
   return await d3.csv(
     "https://raw.githubusercontent.com/the-pudding/data/master/kidz-bop/KB_censored-lyrics.csv"
   );
@@ -20,4 +20,18 @@ export const genNestedData = async () => {
   );
 
   return groupedByArtist;
+};
+
+export const genArtists = async () => {
+  const csvData = await genRawData();
+  const artistSet = new Set();
+  csvData.map((data) => {
+    artistSet.add(data.ogArtist);
+  });
+  const artistList = Array.from(artistSet)
+    .sort()
+    .map((artist) => {
+      return { label: artist, value: artist };
+    });
+  return artistList;
 };
