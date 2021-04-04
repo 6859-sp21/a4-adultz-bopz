@@ -117,9 +117,7 @@ const Bubbles = () => {
             return d.parent === focus || this.style.display === "inline";
           })
           .transition(transition)
-          .style("fill-opacity", (d) => {
-            d.parent === focus ? 1 : 0;
-          })
+          .style("fill-opacity", (d) => (d.parent === focus ? 1 : 0))
           .on("start", function (d) {
             if (d.parent === focus) this.style.display = "inline";
           })
@@ -132,9 +130,7 @@ const Bubbles = () => {
             return d.parent === focus || this.style.display === "inline";
           })
           .transition(transition)
-          .style("fill-opacity", (d) => {
-            d.parent === focus ? 1 : 0;
-          })
+          .style("fill-opacity", (d) => (d.parent === focus ? 1 : 0))
           .on("start", function (d) {
             if (shouldShowLabel(d)) this.style.display = "inline";
           })
