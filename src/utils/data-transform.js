@@ -24,28 +24,20 @@ export const genNestedData = async () => {
 
 export const genArtists = async () => {
   const csvData = await genRawData();
-  const artistSet = new Set();
-  csvData.map((data) => {
-    artistSet.add(data.ogArtist);
-  });
-  const artistList = Array.from(artistSet)
-    .sort()
-    .map((artist) => {
-      return { label: artist, value: artist, type: "artist" };
-    });
+  const artistList = Array.from(d3.group(csvData, d => d.ogArtist))
+    .map((artist) => { 
+      return { label: artist[0], value: artist[0], type: "artist" }
+    })
+    .sort((a, b) => a.label.localeCompare(b.label));
   return artistList;
 };
 
 export const genSongs = async () => {
   const csvData = await genRawData();
-  const songSet = new Set();
-  csvData.map((data) => {
-    songSet.add(data.songName);
-  });
-  const songList = Array.from(songSet)
-    .sort()
-    .map((song) => {
-      return { label: song, value: song, type: "song" };
-    });
+  const songList = Array.from(d3.group(csvData, d => d.songName))
+    .map((song) => { 
+      return { label: song[0], value: song[0], type: "song" }
+    })
+    .sort((a, b) => a.label.localeCompare(b.label));
   return songList;
 };
