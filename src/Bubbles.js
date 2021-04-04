@@ -4,7 +4,13 @@ import { genNestedData } from "./utils/data-transform";
 
 const width = 500;
 const height = 500;
-const color = ["red", "blue", "yellow", "pink"];
+
+const backgroundColor = ['', '#183446', '#5C374C', '#90132E'];
+const backgroundColorHover = ['', '#24506A' ,'#985277', '#B51739']; 
+
+const strokeColor = ["", "#0090C1", "#CE6A85", "#6C0E23"];
+const strokeColorHover = ['', '#0090C1', '#CE6A85', '#6C0E23'];
+
 //d3.scaleSequential(d3.interpolatePlasma).domain([0, 3]);
 
 const pack = (data) =>
@@ -51,15 +57,19 @@ const Bubbles = () => {
         .selectAll("circle")
         .data(root.descendants().slice(1))
         .join("circle")
-        .attr("stroke", (d) => color[d.depth])
-        .attr("fill", "transparent")
+        .attr("fill", (d) => backgroundColor[d.depth])
+        .attr("stroke", (d) => strokeColor[d.depth])
         .style("display", (d) => (d.parent === root ? "inline" : "none"))
         .on("mouseover", (e, d) => {
-          d3.select(e.target).attr("fill", color[d.depth]);
+          d3.select(e.target)
+              .attr("fill", backgroundColorHover[d.depth])
+              .attr("stroke", strokeColorHover[d.depth])
           d3.select("text");
         })
-        .on("mouseout", (e) => {
-          d3.select(e.target).attr("fill", "transparent");
+        .on("mouseout", (e, d) => {
+          d3.select(e.target)
+              .attr("fill", backgroundColor[d.depth])
+              .attr("stroke", strokeColor[d.depth])
         })
         .on("click", (event, d) => {
           if (focus !== d) {
