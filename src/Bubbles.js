@@ -4,6 +4,8 @@ import { genNestedData } from "./data-transform";
 
 const width = 500;
 const height = 500;
+const color = ["red", "blue", "yellow", "pink"];
+//d3.scaleSequential(d3.interpolatePlasma).domain([0, 3]);
 
 const pack = (data) =>
   d3.pack().size([width, height]).padding(3)(
@@ -42,7 +44,6 @@ const Bubbles = () => {
         .style("margin", "0 -14px")
         .attr("text-anchor", "middle")
         .style("cursor", "pointer")
-        .style("background", "white")
         .on("click", (event) => zoom(event, root));
 
       const node = svg
@@ -50,13 +51,15 @@ const Bubbles = () => {
         .selectAll("circle")
         .data(root.descendants().slice(1))
         .join("circle")
-        .attr("fill", (d) => "white")
-        .attr("pointer-events", (d) => (!d.children ? "none" : null))
-        .on("mouseover", (e) => {
-          d3.select(e.target).attr("stroke", "#000");
+        .attr("stroke", (d) => color[d.depth])
+        .attr("fill", "transparent")
+        .style("display", (d) => (d.parent === root ? "inline" : "none"))
+        .on("mouseover", (e, d) => {
+          d3.select(e.target).attr("fill", color[d.depth]);
+          d3.select("text");
         })
         .on("mouseout", (e) => {
-          d3.select(e.target).attr("stroke", null);
+          d3.select(e.target).attr("fill", "transparent");
         })
         .on("click", (event, d) => {
           if (focus !== d) {
@@ -65,19 +68,24 @@ const Bubbles = () => {
           }
         });
 
+      const shouldShowLabel = (d) => {
+        return (d.parent === root && d.r > 20) || d.depth > 1;
+      };
+
       const label = svg
         .append("g")
-        .style("font", "10px sans-serif")
+        .style("font", "5px Lato")
         .attr("pointer-events", "none")
         .attr("text-anchor", "middle")
         .selectAll("text")
         .data(root.descendants())
         .join("text")
+        .style("fill", "white")
         .style("fill-opacity", (d) => (d.parent === root ? 1 : 0))
-        .style("display", (d) => (d.parent === root ? "inline" : "none"))
-        .text((d) => (!d.children ? d.data.songName : d.data.name)); // d.data.name);
+        .style("display", (d) => (shouldShowLabel(d) ? "inline" : "none"))
+        .text((d) => (!d.children ? d.data.songName : d.data.name));
 
-      const zoomTo = (v) => {
+      const zoomTo = (v, t) => {
         const k = width / v[2];
         view = v;
         label.attr("transform", (d) => {
@@ -90,17 +98,33 @@ const Bubbles = () => {
         node.attr("r", (d) => d.r * k);
       };
 
-      zoomTo([root.x, root.y, root.r * 2]);
+      zoomTo([root.x, root.y, root.r * 2], 1);
 
       const zoom = (event, d) => {
-        const focus = d;
+        focus = d;
+        console.log(focus);
 
         const transition = svg
           .transition()
           .duration(event.altKey ? 7500 : 750)
           .tween("zoom", (d) => {
             const i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2]);
-            return (t) => zoomTo(i(t));
+            return (t) => zoomTo(i(t), t);
+          });
+
+        node
+          .filter(function (d) {
+            return d.parent === focus || this.style.display === "inline";
+          })
+          .transition(transition)
+          .style("fill-opacity", (d) => {
+            d.parent === focus ? 1 : 0;
+          })
+          .on("start", function (d) {
+            if (d.parent === focus) this.style.display = "inline";
+          })
+          .on("end", function (d) {
+            if (d.parent !== focus) this.style.display = "none";
           });
 
         label
@@ -108,14 +132,22 @@ const Bubbles = () => {
             return d.parent === focus || this.style.display === "inline";
           })
           .transition(transition)
-          .style("fill-opacity", (d) => (d.parent === focus ? 1 : 0))
+          .style("fill-opacity", (d) => {
+            d.parent === focus ? 1 : 0;
+          })
           .on("start", function (d) {
-            if (d.parent === focus) this.style.display = "inline";
+            if (shouldShowLabel(d)) this.style.display = "inline";
           })
           .on("end", function (d) {
             if (d.parent !== focus) this.style.display = "none";
           });
       };
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          zoom(e, root);
+        }
+      });
     }
   }, [data]);
 
