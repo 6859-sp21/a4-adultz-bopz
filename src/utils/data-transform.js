@@ -31,7 +31,21 @@ export const genArtists = async () => {
   const artistList = Array.from(artistSet)
     .sort()
     .map((artist) => {
-      return { label: artist, value: artist };
+      return { label: artist, value: artist, type: "artist" };
     });
   return artistList;
+};
+
+export const genSongs = async () => {
+  const csvData = await genRawData();
+  const songSet = new Set();
+  csvData.map((data) => {
+    songSet.add(data.songName);
+  });
+  const songList = Array.from(songSet)
+    .sort()
+    .map((song) => {
+      return { label: song, value: song, type: "song" };
+    });
+  return songList;
 };

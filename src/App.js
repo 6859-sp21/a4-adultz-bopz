@@ -2,16 +2,21 @@ import { useState, useEffect } from "react";
 import Select from "react-select";
 import "./App.css";
 import Bubbles from "./Bubbles";
-import { genArtists } from "./utils/data-transform";
+import { genArtists, genSongs } from "./utils/data-transform";
 
 const App = () => {
-  const [artistName, setArtistName] = useState("");
+  const [songOrArtist, setSongOrArtist] = useState(null);
   const [artists, setArtists] = useState([]);
+  const [songs, setSongs] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await genArtists();
-      setArtists(res);
+      const [artistRes, songRes] = await Promise.all([
+        genArtists(),
+        genSongs(),
+      ]);
+      setArtists(artistRes);
+      setSongs(songRes);
     };
     fetchData();
   }, []);
@@ -21,13 +26,13 @@ const App = () => {
       <h1 className="App-header">What's your favorite artist spitting?</h1>
       <div className="App-select">
         <Select
-          placeholder="Search for an artist..."
-          options={artists}
-          value={artistName}
-          onChange={(option) => setArtistName(option)}
+          placeholder="Search for an artist or song..."
+          options={[...artists, ...songs]}
+          value={songOrArtist}
+          onChange={(option) => setSongOrArtist(option)}
         />
       </div>
-      <Bubbles artistName={artistName.value} />
+      <Bubbles songOrArtist={songOrArtist} />
     </div>
   );
 };
