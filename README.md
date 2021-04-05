@@ -5,6 +5,10 @@ Team Members: Shannen Wu ([shannen@mit.edu](shannen@mit.edu)), Jessica Yin ([yin
 
 Dataset URL: https://github.com/the-pudding/data/tree/master/kidz-bop
 
+## How to Deploy
+1. Push any and all changes to main
+2. Run `npm deploy`
+3. Check Deployed Site URL: https://6859-sp21.github.io/a4-adultz-bopz/
 
 ### Hierarchy of Data Structure:
 - Level 0: Root
