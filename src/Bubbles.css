@@ -1,0 +1,37 @@
+.Bubbles-lyricRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+}
+
+.Bubbles-ogLyric,
+.Bubbles-kbLyric {
+  padding: 12px;
+  margin-top: 4px;
+  background-color: var(--dark-purple);
+  border-radius: 16px;
+}
+
+.Bubbles-kbLyric {
+  background-color: var(--light-purple);
+  color: var(--dark);
+}
+
+.Bubbles-arrow {
+  align-self: center;
+  color: var(--dark-text);
+  min-width: 40px;
+  text-align: center;
+}
+
+b {
+  font-weight: 200;
+}
+
+button {
+  border: none;
+  background-color: transparent;
+  font-family: "Lato";
+  color: var(--light-text);
+  cursor: pointer;
+}

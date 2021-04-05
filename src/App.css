@@ -1,11 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap");
 :root {
-  --dark: #102a43;
+  --dark: rgb(29, 33, 37);
+  --dark-secondary: #334e68;
   --dark-text: #8c9095;
   --light-text: #f0f4f8;
   --dark-green: rgb(36, 158, 115);
   --light-green: rgb(133, 221, 183);
   --blue: rgb(17, 190, 221);
+  --light-purple: #e1c7e0;
+  --dark-purple: #c054be;
 }
 
 body {
@@ -28,4 +31,11 @@ body {
 .App-select {
   padding: 8px;
   width: 20%;
+}
+
+.App-escape {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  color: var(--dark-text);
 }

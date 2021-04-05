@@ -77,6 +77,7 @@ const App = () => {
 
   return (
     <div className="App">
+      <div className="App-escape">press ESC to zoom out</div>
       {/* <h1 className="App-header">What's your favorite artist spitting?</h1> */}
       <div className="App-header">
         What's

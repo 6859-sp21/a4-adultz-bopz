@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import { genNestedData } from "./utils/data-transform";
 import { width, height, pack } from "./utils/d3-config.js";
 import { VIEW_ALL_OPTION } from "./App";
+import "./Bubbles.css";
 
 const scale1 = d3
   .scaleSequential(d3.interpolate("#00875A", "#ABF5D1"))
@@ -42,7 +43,7 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
         });
       }
       textValue = `Censored words in Kidz Bop songs by ${d.data.name}:`;
-    } else {
+    } else if (d.depth == 2) {
       // song level
       textValue = `Songs that ${d.parent.data.name} say(s) '${d.data.name}':`;
     }
@@ -140,8 +141,13 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
         .style("cursor", "pointer")
         .on("click", (event) => {
           if (focus !== root) {
-            updateArtistTitle(focus.parent, true);
-            zoom(event, focus.parent);
+            if (d3.select("#lyrics").style("z-index") > 0) {
+              // Hide lyrics when escape button pushed
+              closeLyrics();
+            } else {
+              updateArtistTitle(focus.parent, true);
+              zoom(event, focus.parent);
+            }
           }
         });
 
@@ -224,7 +230,7 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
         .attr("id", "tooltip")
         .attr("style", "position: absolute; opacity: 0;")
         .style("color", "white")
-        .style("background-color", "#102a43bb")
+        .style("background-color", "#334e68bb")
         .style("padding", "8px")
         .style("border-radius", "4px");
 
@@ -244,14 +250,14 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
         .style("z-index", "-10")
         .style("position", "absolute")
         .style("opacity", "0")
-        .style("width", "80vw")
-        .style("height", "80vh")
-        .style("left", "10%")
-        .style("top", "10%")
+        .style("width", "40vw")
+        .style("height", "60vh")
+        .style("left", "30%")
+        .style("top", "20%")
         .style("overflow", "scroll")
-        .style("color", "white")
+        .style("color", "var(--light-text)")
         .style("font", "16px Lato")
-        .style("background-color", "black")
+        .style("background-color", "var(--dark-secondary)")
         .style("padding", "24px")
         .style("border-radius", "12px");
 
@@ -260,7 +266,7 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
         .style("position", "absolute")
         .style("right", "12px")
         .style("top", "12px")
-        .text("Close")
+        .text("x")
         .on("click", () => {
           // Close lyric pop-up
           d3.select("#lyrics")
@@ -293,15 +299,19 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
     }
   }, [root]);
 
+  const closeLyrics = () => {
+    d3.select("#lyrics")
+      .transition()
+      .duration(200)
+      .style("opacity", 0)
+      .style("z-index", -10);
+  };
+
   const handleEscape = (e) => {
     if (e.key === "Escape") {
       if (d3.select("#lyrics").style("z-index") > 0) {
         // Hide lyrics when escape button pushed
-        d3.select("#lyrics")
-          .transition()
-          .duration(200)
-          .style("opacity", 0)
-          .style("z-index", -10);
+        closeLyrics();
       } else if (focus !== root) {
         updateArtistTitle(focus.parent, true);
         zoom(e, focus.parent);
@@ -309,36 +319,59 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
     }
   };
 
+  const generateLyricRow = (data) => {
+    let ogHeader = `<b>${data.ogArtist}</b><br />`;
+    let ogLyricHTML =
+      '<div class="Bubbles-ogLyric">"' + data.ogLyric + '"</div>';
+
+    let kbHeader = "<b style='float:right'>Kidz Bop</b><br />";
+    let kbLyricHTML =
+      data.kbLyric === "cuts verse"
+        ? '<div class="Bubbles-kbLyric"><i>cuts verse</i></div>'
+        : '<div class="Bubbles-kbLyric">"' + data.kbLyric + '"</div>';
+
+    return (
+      "<div style='width:45%'>" +
+      ogHeader +
+      ogLyricHTML +
+      "</div>" +
+      "<div class='Bubbles-arrow'>--></div>" +
+      "<div style='width:45%'>" +
+      kbHeader +
+      kbLyricHTML +
+      "</div>"
+    );
+  };
+
   // Function to transform data into HTML content
   const generateLyricPopup = (data) => {
     // Merge all lyrics together
     const innerHTML = data.children
       .map((child) => {
-        let ogHeader = "<b>Original Lyric:</b><br />";
-        let ogLyricHTML = '"' + child.ogLyric + '" <br /><br />';
-
-        let kbHeader = "<b>Kidz Bop Lyric:</b><br />";
-        let kbLyricHTML =
-          child.kbLyric === "cuts verse"
-            ? "<i>cuts verse</i>"
-            : '"' + child.kbLyric + '"';
-
-        return ogHeader + ogLyricHTML + kbHeader + kbLyricHTML;
+        return (
+          '<div class="Bubbles-lyricRow">' + generateLyricRow(child) + "</div>"
+        );
       })
-      .join("<hr />");
+      .join("");
 
     let { songName, ogArtist, year } = data.children[0];
     const songTitle = songName + " by " + ogArtist;
     const releasedYear = "Released in " + year + ".";
 
     // Fill in title of lyric popup
-    d3.select("#lyrics-title").style("font-weight", "bold").text(songTitle);
+    d3.select("#lyrics-title")
+      .style("font-weight", "bold")
+      .style("margin-bottom", 0)
+      .text(songTitle);
 
     // Fill in year of lyric popup
-    d3.select("#lyrics-year").text(releasedYear);
+    d3.select("#lyrics-year")
+      .style("margin-top", 0)
+      .style("margin-bottom", "8px")
+      .text(releasedYear);
 
     // Fill in content of lyric popup
-    d3.select("#lyrics-content").html("<div>" + innerHTML + "</div>");
+    d3.select("#lyrics-content").html(innerHTML);
 
     // Reveal lyric popup
     d3.select("#lyrics")
