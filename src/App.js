@@ -4,6 +4,12 @@ import "./App.css";
 import Bubbles from "./Bubbles";
 import { genArtists, genSongs } from "./utils/data-transform";
 
+export const VIEW_ALL_OPTION = {
+  label: "your favorite artist",
+  value: "all",
+  type: "all",
+};
+
 const App = () => {
   const [songOrArtist, setSongOrArtist] = useState(null);
   const [artists, setArtists] = useState([]);
@@ -13,26 +19,30 @@ const App = () => {
     const fetchData = async () => {
       const [artistRes, songRes] = await Promise.all([
         genArtists(),
-        genSongs(),
+        // genSongs(),
       ]);
       setArtists(artistRes);
-      setSongs(songRes);
+      // setSongs(songRes);
     };
     fetchData();
   }, []);
 
   return (
     <div className="App">
-      <h1 className="App-header">What's your favorite artist spitting?</h1>
-      <div className="App-select">
+      {/* <h1 className="App-header">What's your favorite artist spitting?</h1> */}
+      <div className="App-header">
+        What's
         <Select
-          placeholder="Search for an artist or song..."
-          options={[...artists, ...songs]}
+          width="auto"
+          autoFocus
+          placeholder="your favorite artist"
+          options={[VIEW_ALL_OPTION, ...artists]}
           value={songOrArtist}
-          onChange={(option) => setSongOrArtist(option)}
+          onChange={setSongOrArtist}
         />
+        spitting?
       </div>
-      <Bubbles songOrArtist={songOrArtist} />
+      <Bubbles songOrArtist={songOrArtist} setSongOrArtist={setSongOrArtist} />
     </div>
   );
 };

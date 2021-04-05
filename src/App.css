@@ -1,6 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap");
-
 :root {
   --dark: #102a43;
   --light-text: #f0f4f8;
@@ -14,13 +13,15 @@ body {
 }
 
 .App-header {
-  text-align: center;
-  padding-top: 36px;
-  padding-bottom: 18px;
+  font-size: 20px;
   color: var(--light-text);
+  padding: 8px;
 }
 
 .App-select {
-  width: 50%;
-  margin: auto;
+  text-align: center;
+  padding: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
