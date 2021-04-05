@@ -271,16 +271,17 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
 
   const handleEscape = (e) => {
     if (e.key === "Escape") {
-      zoom(e, root);
-      updateArtistTitle("");
+      if(d3.select('#lyrics').style('z-index') > 0){
+        // Hide lyrics when escape button pushed
+        d3.select('#lyrics')
+          .transition()
+          .duration(200)
+          .style('opacity', 0)
+          .style('z-index', -10);
+      } else {
+        zoom(e, root);
+      }
     }
-
-    // Hide lyrics when escape button pushed
-    d3.select('#lyrics')
-      .transition()
-      .duration(200)
-      .style('opacity', 0)
-      .style('z-index', -10);
   };
 
   // Function to transform data into HTML content
