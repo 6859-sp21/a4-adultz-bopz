@@ -39,7 +39,7 @@ const customStyles = {
     ...base,
     color: "var(--light-green)",
     "&:hover": {
-      color: "var(--light-green)",
+      color: "var(--blue)",
     },
   }),
   input: (base) => ({
@@ -58,7 +58,7 @@ const customStyles = {
     backgroundColor: state.isSelected
       ? "var(--blue)"
       : state.isFocused
-      ? "var(--light-green)"
+      ? "var(--dark-green)"
       : "var(--dark)",
   }),
 };
