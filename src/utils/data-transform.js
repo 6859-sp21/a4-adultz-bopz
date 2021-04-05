@@ -13,7 +13,14 @@ export const genNestedData = async () => {
       let groupedByBadword = Array.from(
         d3.group(item[1], (d) => d.badword)
       ).map((word) => {
-        return { name: word[0], children: word[1] };
+
+        let groupedBySong = Array.from(
+          d3.group(word[1], (d) => d.songName)
+        ).map((song) => {
+          return { name: song[0], children: song[1] };
+        });
+
+        return { name: word[0], children: groupedBySong };
       });
       return { name: item[0], children: groupedByBadword };
     }

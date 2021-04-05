@@ -1,8 +1,21 @@
 import React, { useRef, useState, useEffect } from "react";
 import * as d3 from "d3";
 import { genNestedData } from "./utils/data-transform";
-import { width, height, color, pack } from "./utils/d3-config.js";
+import { width, height, pack } from "./utils/d3-config.js";
 import { VIEW_ALL_OPTION } from "./App";
+
+const scale1 = d3
+  .scaleSequential(d3.interpolate("#00875A", "#ABF5D1"))
+  .domain([0, 30]);
+const scale2 = d3
+  .scaleSequential(d3.interpolate("#00B8D9", "#B3F5FF"))
+  .domain([2, 8]);
+const scale3 = d3
+  .scaleSequential(d3.interpolate("#C054BE", "#E1C7E0"))
+  .domain([0, 8]);
+
+// TODO: Create scale 4
+const color = [null, scale1, scale2, scale3, scale3];
 
 let svg, view, label, node, focus;
 
@@ -129,7 +142,11 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
         .selectAll("circle")
         .data(root.descendants().slice(1))
         .join("circle")
-        .attr("stroke", (d) => color[d.depth](d.r))
+        .attr("stroke", (d) => {
+          if( typeof color[d.depth] === 'function'){
+            return color[d.depth](d.r);
+          }
+        })
         .attr("fill", "transparent")
         .style("display", (d) => (d.parent === root ? "inline" : "none"))
         .on("mouseover", (e, d) => {
@@ -206,17 +223,15 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
   };
 
   useEffect(() => {
-    console.log("selected", songOrArtist, root);
     if (songOrArtist && root) {
       const newFocus = root
         .descendants()
         .filter((d) => d.data.name === songOrArtist.value)[0];
-      console.log("filtered", newFocus);
       if (newFocus) {
         zoom({}, newFocus);
       }
     }
-  }, [songOrArtist]);
+  }, [songOrArtist, root, zoom]);
 
   return (
     <>
