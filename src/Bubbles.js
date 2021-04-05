@@ -175,7 +175,13 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
             if (d.depth === 1) {
               updateArtistTitle(d.data.name);
             }
-            zoom(event, d);
+
+            // Only zoom until you get to song level. Then reveal bad words in each song.
+            if(d.depth < 3){
+              zoom(event, d);
+            } else if ( d.depth === 3 ){
+              generateLyricPopup(d.data);
+            }
             event.stopPropagation();
           }
         });
@@ -205,6 +211,54 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
         .style("padding", "8px")
         .style("border-radius", "4px");
 
+      // Lyric breakdown
+      d3.select("body")
+        .append("div")
+        .attr("id", "lyrics")
+        .style("z-index",  "-10")
+        .style("position", "absolute")
+        .style("opacity", "0") 
+        .style("width", "80vw")
+        .style("height", "80vh")
+        .style("left", "10%")
+        .style("top", "10%")
+        .style("overflow", "scroll")
+        .style("color", "white")
+        .style("font", "16px Lato")
+        .style("background-color", "black")
+        .style("padding", "24px")
+        .style("border-radius", "12px");
+
+      d3.select('#lyrics')
+        .append('button')
+        .style('position', 'absolute')
+        .style('right', '12px')
+        .style('top', '12px')
+        .text('Close')
+        .on('click', () => {
+          // Close lyric pop-up
+          d3.select('#lyrics')
+            .transition()
+            .duration(200)
+            .style('z-index', -10)
+            .style('opacity', 0);
+        });
+
+      d3.select('#lyrics')
+        .append('h2')
+        .style('margin-top', 0)
+        .style('text-align', 'center')
+        .attr('id', 'lyrics-title')
+
+      d3.select('#lyrics')
+        .append('p')
+        .style('text-align', 'center')
+        .attr('id', 'lyrics-year')
+
+      d3.select('#lyrics')
+        .append('div')
+        .attr('id', 'lyrics-content')
+
       // esc key zooms out
       zoomTo([root.x, root.y, root.r * 2]);
       document.addEventListener("keydown", handleEscape);
@@ -220,6 +274,51 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
       zoom(e, root);
       updateArtistTitle("");
     }
+
+    // Hide lyrics when escape button pushed
+    d3.select('#lyrics')
+      .transition()
+      .duration(200)
+      .style('opacity', 0)
+      .style('z-index', -10);
+  };
+
+  // Function to transform data into HTML content
+  const generateLyricPopup = (data) => {
+    // Merge all lyrics together
+    const innerHTML = data.children.map((child) => {
+      let ogHeader = '<b>Original Lyric:</b><br />';
+      let ogLyricHTML = '"' + child.ogLyric + '" <br /><br />';
+
+      let kbHeader = '<b>Kidz Bop Lyric:</b><br />';
+      let kbLyricHTML = (child.kbLyric === 'cuts verse') ? '<i>cuts verse</i>' : '"' + child.kbLyric + '"';
+  
+      return ogHeader + ogLyricHTML + kbHeader + kbLyricHTML;
+    }).join("<hr />");
+
+    let { songName, ogArtist, year } = data.children[0];
+    const songTitle = songName + ' by ' + ogArtist
+    const releasedYear = 'Released in ' + year + '.';
+
+    // Fill in title of lyric popup
+    d3.select('#lyrics-title')
+      .style('font-weight', 'bold')
+      .text(songTitle)
+
+    // Fill in year of lyric popup
+    d3.select('#lyrics-year')
+      .text(releasedYear)
+
+    // Fill in content of lyric popup
+    d3.select("#lyrics-content")
+      .html('<div>'+ innerHTML + '</div>')
+      
+    // Reveal lyric popup
+    d3.select('#lyrics')
+      .transition()
+      .duration(200)
+      .style("z-index", 10)
+      .style('opacity', 1);
   };
 
   useEffect(() => {
