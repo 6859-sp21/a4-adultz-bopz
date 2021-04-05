@@ -1,27 +1,30 @@
-@import url("https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap");
 :root {
   --dark: #102a43;
+  --dark-text: #8c9095;
   --light-text: #f0f4f8;
+  --dark-green: rgb(36, 158, 115);
+  --light-green: rgb(133, 221, 183);
+  --blue: rgb(17, 190, 221);
 }
 
 body {
   background-color: var(--dark);
-  font-family: "Libre Caslon Text", serif;
+  font-family: "Lato";
   margin: 0;
   overflow-x: hidden;
 }
 
 .App-header {
-  font-size: 20px;
+  /* font-size: 20px; */
   color: var(--light-text);
-  padding: 8px;
+  padding: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .App-select {
-  text-align: center;
-  padding: 36px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  padding: 8px;
+  width: 20%;
 }

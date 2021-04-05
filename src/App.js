@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Select from "react-select";
 import "./App.css";
 import Bubbles from "./Bubbles";
-import { genArtists, genSongs } from "./utils/data-transform";
+import { genArtists } from "./utils/data-transform";
 
 export const VIEW_ALL_OPTION = {
   label: "your favorite artist",
@@ -10,19 +10,67 @@ export const VIEW_ALL_OPTION = {
   type: "all",
 };
 
+const customStyles = {
+  control: (base) => ({
+    ...base,
+    backgroundColor: "var(--dark)",
+    color: "var(--light-text)",
+    border: "none",
+    borderRadius: "0",
+    borderBottom: "2px solid var(--light-green)",
+    boxShadow: "none",
+    "&:hover": {
+      borderBottom: "2px solid var(--blue)",
+    },
+  }),
+  placeholder: (base) => ({
+    ...base,
+    backgroundColor: "var(--dark)",
+    color: "var(--dark-text)",
+  }),
+  singleValue: (base) => ({
+    ...base,
+    color: "var(--light-text)",
+  }),
+  indicatorSeparator: () => ({
+    display: "none",
+  }),
+  dropdownIndicator: (base) => ({
+    ...base,
+    color: "var(--light-green)",
+    "&:hover": {
+      color: "var(--light-green)",
+    },
+  }),
+  input: (base) => ({
+    ...base,
+    color: "var(--light-text)",
+  }),
+  menu: (base) => ({
+    ...base,
+    backgroundColor: "var(--dark)",
+    color: "var(--light-text)",
+  }),
+  option: (base, state) => ({
+    ...base,
+    fontSize: "16px",
+    color: "var(--light-text)",
+    backgroundColor: state.isSelected
+      ? "var(--blue)"
+      : state.isFocused
+      ? "var(--light-green)"
+      : "var(--dark)",
+  }),
+};
+
 const App = () => {
   const [songOrArtist, setSongOrArtist] = useState(null);
   const [artists, setArtists] = useState([]);
-  const [songs, setSongs] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const [artistRes, songRes] = await Promise.all([
-        genArtists(),
-        // genSongs(),
-      ]);
+      const artistRes = await genArtists();
       setArtists(artistRes);
-      // setSongs(songRes);
     };
     fetchData();
   }, []);
@@ -33,12 +81,13 @@ const App = () => {
       <div className="App-header">
         What's
         <Select
-          width="auto"
+          className="App-select"
           autoFocus
           placeholder="your favorite artist"
-          options={[VIEW_ALL_OPTION, ...artists]}
+          options={[...artists]}
           value={songOrArtist}
           onChange={setSongOrArtist}
+          styles={customStyles}
         />
         spitting?
       </div>
