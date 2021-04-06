@@ -29,11 +29,11 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
   const updateArtistTitle = (d, shouldUpdate) => {
     let textValue;
 
-    if (d.depth == 0) {
+    if (d.depth === 0) {
       // artist level
       textValue = "";
       if (shouldUpdate) setSongOrArtist(VIEW_ALL_OPTION);
-    } else if (d.depth == 1) {
+    } else if (d.depth === 1) {
       // bad word level
       if (shouldUpdate) {
         setSongOrArtist({
@@ -43,7 +43,7 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
         });
       }
       textValue = `Censored words in Kidz Bop songs by ${d.data.name}:`;
-    } else if (d.depth == 2) {
+    } else if (d.depth === 2) {
       // song level
       textValue = `Songs that ${d.parent.data.name} say(s) '${d.data.name}':`;
     }
@@ -51,7 +51,7 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
     d3.select("#selectedArtistName")
       .transition()
       .duration(200)
-      .style("opacity", textValue == "" ? 0 : 1);
+      .style("opacity", textValue === "" ? 0 : 1);
 
     if (textValue) {
       d3.select("#selectedArtistName").text(textValue);
@@ -391,7 +391,7 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
         updateArtistTitle(newFocus, false);
       }
     }
-  }, [songOrArtist, root]);
+  }, [songOrArtist, root, zoom]);
 
   return (
     <>
