@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import Select from "react-select";
+import { useState } from "react";
 import "./App.css";
-import Bubbles from "./Bubbles";
-import { genArtists } from "./utils/data-transform";
+import { Scrollama, Step } from 'react-scrollama'
+import BubbleStep from "./steps/BubbleStep";
+import IntroStep from './steps/IntroStep';
 
 export const VIEW_ALL_OPTION = {
   label: "your favorite artist",
@@ -10,89 +10,46 @@ export const VIEW_ALL_OPTION = {
   type: "all",
 };
 
-const customStyles = {
-  control: (base) => ({
-    ...base,
-    backgroundColor: "var(--dark)",
-    color: "var(--light-text)",
-    border: "none",
-    borderRadius: "0",
-    borderBottom: "2px solid var(--light-green)",
-    boxShadow: "none",
-    "&:hover": {
-      borderBottom: "2px solid var(--blue)",
-    },
-  }),
-  placeholder: (base) => ({
-    ...base,
-    backgroundColor: "var(--dark)",
-    color: "var(--dark-text)",
-  }),
-  singleValue: (base) => ({
-    ...base,
-    color: "var(--light-text)",
-  }),
-  indicatorSeparator: () => ({
-    display: "none",
-  }),
-  dropdownIndicator: (base) => ({
-    ...base,
-    color: "var(--light-green)",
-    "&:hover": {
-      color: "var(--blue)",
-    },
-  }),
-  input: (base) => ({
-    ...base,
-    color: "var(--light-text)",
-  }),
-  menu: (base) => ({
-    ...base,
-    backgroundColor: "var(--dark)",
-    color: "var(--light-text)",
-  }),
-  option: (base, state) => ({
-    ...base,
-    fontSize: "16px",
-    color: "var(--light-text)",
-    backgroundColor: state.isSelected
-      ? "var(--blue)"
-      : state.isFocused
-      ? "var(--dark-green)"
-      : "var(--dark)",
-  }),
-};
-
 const App = () => {
-  const [songOrArtist, setSongOrArtist] = useState(null);
-  const [artists, setArtists] = useState([]);
+  const [currentStepIndex, setCurrentStepIndex] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const artistRes = await genArtists();
-      setArtists(artistRes);
-    };
-    fetchData();
-  }, []);
+  const onStepEnter = ({ data }) => {
+    setCurrentStepIndex(data);
+  };
 
   return (
     <div className="App">
-      <div className="App-escape">press ESC to zoom out</div>
-      {/* <h1 className="App-header">What's your favorite artist spitting?</h1> */}
-      <div className="App-header">
-        What's
-        <Select
-          className="App-select"
-          autoFocus
-          placeholder="your favorite artist"
-          options={[...artists]}
-          value={songOrArtist}
-          onChange={setSongOrArtist}
-          styles={customStyles}
-        />
-        spitting?
-      </div>
-      <Bubbles songOrArtist={songOrArtist} setSongOrArtist={setSongOrArtist} />
+      <Scrollama onStepEnter={onStepEnter}>
+        <Step data={0} key={0}>
+          <div className='App-step App-step-text-center'>
+            <IntroStep />
+          </div>
+        </Step>
+        {[2, 3, 4].map((_, stepIndex) => (
+          <Step data={stepIndex} key={stepIndex}>
+            <div
+              style={{
+                margin: '50vh 0',
+                color: 'white',
+                opacity: currentStepIndex === stepIndex ? 1 : 0.2,
+              }}
+            >
+              I'm a Scrollama Step of index {stepIndex}
+            </div>
+          </Step>
+        ))}
+        <Step data={5} key={5}>
+          <div
+            style={{
+              margin: '50vh 0',
+              border: '1px solid gray',
+              opacity: currentStepIndex === 5 ? 1 : 0.2,
+            }}
+          >
+            <BubbleStep />  
+          </div>
+        </Step>
+      </Scrollama>
     </div>
   );
 };
