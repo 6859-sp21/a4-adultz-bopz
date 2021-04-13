@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import { Scrollama, Step } from 'react-scrollama'
 import BubbleStep from "./steps/BubbleStep";
-import { IntroStep, Step1, Step2, Step2a, Step2b, Step2c, Step2d } from './steps/StorySteps';
+import { IntroStep, Step2a, Step2b, Step2c, Step2d } from './steps/StorySteps';
 
 export const VIEW_ALL_OPTION = {
   label: "your favorite artist",

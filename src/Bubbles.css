@@ -44,3 +44,11 @@ button {
     color: var(--light-text);
     cursor: pointer;
 }
+
+.ogLyric-bad {
+    background-color: rgb(255, 64, 64);
+}
+
+.kblyric-different {
+    background-color: rgba(180, 255, 164, 0.735);
+}

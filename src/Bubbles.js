@@ -327,13 +327,10 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
   const generateLyricRow = (data) => {
     let ogHeader = `<b>${data.ogArtist}</b><br />`;
     let ogLyricHTML =
-      '<div class="Bubbles-ogLyric">"' + data.ogLyric + '"</div>';
+      '<div class="Bubbles-ogLyric">"' + data.ogLyricHTML + '"</div>';
 
     let kbHeader = "<b style='float:right'>Kidz Bop</b><br />";
-    let kbLyricHTML =
-      data.kbLyric === "cuts verse"
-        ? '<div class="Bubbles-kbLyric"><i>cuts verse</i></div>'
-        : '<div class="Bubbles-kbLyric">"' + data.kbLyric + '"</div>';
+    let kbLyricHTML = '<div class="Bubbles-kbLyric">"' + data.kbLyricHTML + '"</div>';
 
     return (
       "<div style='width:45%'>" +
