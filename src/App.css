@@ -34,14 +34,19 @@ body {
 }
 
 .App-escape {
-    position: absolute;
-    top: 4px;
-    right: 4px;
+    padding: 8px;
+    text-align: right;
+    color: var(--dark-text);
+}
+
+.App-data {
+    padding: 8px;
+    text-align: left;
     color: var(--dark-text);
 }
 
 .App-step {
-    margin: 50vh 0;
+    padding: 40vh 0;
     color: white;
 }
 

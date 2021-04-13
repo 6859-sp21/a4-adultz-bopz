@@ -58,7 +58,7 @@ const customStyles = {
 };
 
 
-const BubbleStep = () => {
+const BubbleStep = ({shouldFocus}) => {
 
   const [songOrArtist, setSongOrArtist] = useState(null);
   const [artists, setArtists] = useState([]);
@@ -78,7 +78,7 @@ const BubbleStep = () => {
         What's
         <Select
           className="App-select"
-          autoFocus
+          autoFocus={shouldFocus}
           placeholder="your favorite artist"
           options={[...artists]}
           value={songOrArtist}
@@ -90,6 +90,7 @@ const BubbleStep = () => {
       <div className="App-header">
         <Bubbles songOrArtist={songOrArtist} setSongOrArtist={setSongOrArtist} />
       </div>
+      <div className="App-data">data from The Pudding (https://github.com/the-pudding/data/tree/master/kidz-bop)</div>
     </div>
   );
 
