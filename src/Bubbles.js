@@ -275,6 +275,7 @@ const Bubbles = ({ songOrArtist, setSongOrArtist, shouldFocus }) => {
         .style("z-index", "-10")
         .style("position", "fixed")
         .style("opacity", "0")
+        .style("pointer-events", "none")
         .style("width", "40vw")
         .style("height", "60vh")
         .style("left", "50%")
@@ -285,7 +286,7 @@ const Bubbles = ({ songOrArtist, setSongOrArtist, shouldFocus }) => {
         .style("background-color", "var(--dark-secondary)")
         .style("padding", "24px")
         .style("border-radius", "12px")
-        .style("transform",  "translate(-50%, -50%)");
+        .style("transform", "translate(-50%, -50%)");
 
       d3.select("#lyrics")
         .append("button")
@@ -326,7 +327,8 @@ const Bubbles = ({ songOrArtist, setSongOrArtist, shouldFocus }) => {
       .transition()
       .duration(200)
       .style("opacity", 0)
-      .style("z-index", -10);
+      .style("z-index", -10)
+      .style("pointer-events", "none");
     updateArtistTitle(focus, false);
   };
 
@@ -399,7 +401,8 @@ const Bubbles = ({ songOrArtist, setSongOrArtist, shouldFocus }) => {
       .transition()
       .duration(200)
       .style("z-index", 10)
-      .style("opacity", 1);
+      .style("opacity", 1)
+      .style("pointer-events", "all");
   };
 
   useEffect(() => {

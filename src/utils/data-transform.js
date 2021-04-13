@@ -72,8 +72,9 @@ const compareLyrics = (badword, ogLyric, kbLyric) => {
   return { 'kbLyricHTML': "<span>" + kbLyricHTML + "</span>", 'ogLyricHTML' : "<span>" + ogLyricHTML + "</span>" };
 }
 
+const punctuationless = (s) => s.replace(/[^A-Za-z0-9]/g, "").toLowerCase();
 
-const convertArrayToJSON = (arr) => Object.assign(...arr.map((k) => ({[k]: 0})));
+const convertArrayToJSON = (arr) => Object.assign(...arr.map((k) => ({ [punctuationless(k)]: 0 })));
 
 const getFormattedOGLyricAsHTML = (ogLyricWordArray, badword) => {
   return ogLyricWordArray.map((ogWord) => {
@@ -86,7 +87,7 @@ const getFormattedKBLyricAsHTML = (ogLyricWordObj, kbLyricWordArray) => {
   return kbLyricWordArray.map((kbWord, i) => {
     
     // Check if KB Word exists in OG Lyric
-    let kbWordInOGLyric = ogLyricWordObj[kbWord] !== undefined;
+    let kbWordInOGLyric = ogLyricWordObj[punctuationless(kbWord)] !== undefined;
 
     if( kbWordInOGLyric ){
       // Word is in both OG and KB Lyric
