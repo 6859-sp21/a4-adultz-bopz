@@ -23,7 +23,10 @@ export const genNestedData = async () => {
             // uniqueLyricGroup = is a size-2 array with lyric and index 0 and array of data points at index 1
             let dataEntries = uniqueLyricGroup[1];
             let firstUniqueEntry = dataEntries[0];
-            return firstUniqueEntry;
+            const { ogLyric, kbLyric, badword } = firstUniqueEntry;
+            
+            let { kbLyricHTML, ogLyricHTML } = compareLyrics(badword, ogLyric, kbLyric);
+            return { ...firstUniqueEntry, kbLyricHTML: kbLyricHTML, ogLyricHTML: ogLyricHTML}
           })
           return { name: song[0], children: groupedByLyric };
         });
@@ -55,3 +58,56 @@ export const genSongs = async () => {
     .sort((a, b) => a.label.localeCompare(b.label));
   return songList;
 };
+
+
+const compareLyrics = (badword, ogLyric, kbLyric) => {
+
+  let ogLyricParsed = ogLyric.split(" ");
+  let ogLyricObj = convertArrayToJSON(ogLyricParsed);
+  let ogLyricHTML = getFormattedOGLyricAsHTML(ogLyricParsed, badword);
+
+  let kbLyricParsed = kbLyric.split(" ");
+  let kbLyricHTML = ( kbLyric === "cuts verse" ) ? "<i>cuts verse</i>" : getFormattedKBLyricAsHTML(ogLyricObj, kbLyricParsed);
+
+  return { 'kbLyricHTML': "<span>" + kbLyricHTML + "</span>", 'ogLyricHTML' : "<span>" + ogLyricHTML + "</span>" };
+}
+
+const punctuationless = (s) => s.replace(/[^A-Za-z0-9]/g, "").toLowerCase();
+
+const convertArrayToJSON = (arr) => Object.assign(...arr.map((k) => ({ [punctuationless(k)]: 0 })));
+
+const getFormattedOGLyricAsHTML = (ogLyricWordArray, badword) => {
+  return ogLyricWordArray.map((ogWord) => {
+    return "<span class='ogLyric-" + (ogWord.toLowerCase().includes(badword) ? 'bad' : 'good') + "'>" + ogWord + "</span>";
+  }).join(" ");
+}
+
+const getFormattedKBLyricAsHTML = (ogLyricWordObj, kbLyricWordArray) => {
+  let prev = true; // true if same, false if altered
+  return kbLyricWordArray.map((kbWord, i) => {
+    
+    // Check if KB Word exists in OG Lyric
+    let kbWordInOGLyric = ogLyricWordObj[punctuationless(kbWord)] !== undefined;
+
+    if( kbWordInOGLyric ){
+      // Word is in both OG and KB Lyric
+      // if prev word was a altered lyric, close the span
+      let prefix = !prev 
+        ? "</span><span class='kblyric-same start'>" 
+        : "<span class='kblyric-same'>"
+      prev = true
+      return prefix + kbWord + "</span> ";
+      
+    } else {
+      // kbWord is not in og lyric
+      // CHANGE
+      // if it is the last word in the word array, close the span if the previous word is a altered word
+      let suffix = !prev && kbLyricWordArray.length - 1 == i ? "</span>" : ""
+      // if the previous word is a different word, don't start the span
+      let prefix = prev ? "<span class='kblyric-different'>" : ""
+      prev = false
+      return prefix + kbWord + suffix;
+    }
+  }).join(" ");
+
+}

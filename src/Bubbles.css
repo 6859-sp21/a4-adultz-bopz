@@ -8,13 +8,13 @@
 .Bubbles-kbLyric {
     padding: 12px;
     margin-top: 4px;
-    background-color: var(--dark-purple);
+    background-color: #456381;
     border-radius: 16px;
+    color: var(--light-text);
 }
 
 .Bubbles-kbLyric {
-    background-color: var(--light-purple);
-    color: var(--dark);
+    text-align: right;
 }
 
 .Bubbles-arrow {
@@ -43,4 +43,21 @@ button {
     font-family: "Lato";
     color: var(--light-text);
     cursor: pointer;
+}
+
+.ogLyric-bad {
+    background-color: var(--dark-purple);
+    padding: 0px 4px;
+    border-radius: 2px;
+}
+
+.kblyric-different {
+    background-color: var(--light-green);
+    padding-left: 4px;
+    border-radius: 2px;
+    color: var(--dark)
+}
+
+.kblyric-same.start {
+    padding-left: 2px;
 }
