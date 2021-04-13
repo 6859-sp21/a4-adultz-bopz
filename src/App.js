@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import Select from "react-select";
+import { useState } from "react";
 import "./App.css";
-import Bubbles from "./Bubbles";
-import { genArtists } from "./utils/data-transform";
+import { Scrollama, Step } from 'react-scrollama'
+import BubbleStep from "./steps/BubbleStep";
+import { IntroStep, Step1, Step2, Step2a, Step2b, Step2c, Step2d } from './steps/StorySteps';
 
 export const VIEW_ALL_OPTION = {
   label: "your favorite artist",
@@ -10,89 +10,66 @@ export const VIEW_ALL_OPTION = {
   type: "all",
 };
 
-const customStyles = {
-  control: (base) => ({
-    ...base,
-    backgroundColor: "var(--dark)",
-    color: "var(--light-text)",
-    border: "none",
-    borderRadius: "0",
-    borderBottom: "2px solid var(--light-green)",
-    boxShadow: "none",
-    "&:hover": {
-      borderBottom: "2px solid var(--blue)",
-    },
-  }),
-  placeholder: (base) => ({
-    ...base,
-    backgroundColor: "var(--dark)",
-    color: "var(--dark-text)",
-  }),
-  singleValue: (base) => ({
-    ...base,
-    color: "var(--light-text)",
-  }),
-  indicatorSeparator: () => ({
-    display: "none",
-  }),
-  dropdownIndicator: (base) => ({
-    ...base,
-    color: "var(--light-green)",
-    "&:hover": {
-      color: "var(--blue)",
-    },
-  }),
-  input: (base) => ({
-    ...base,
-    color: "var(--light-text)",
-  }),
-  menu: (base) => ({
-    ...base,
-    backgroundColor: "var(--dark)",
-    color: "var(--light-text)",
-  }),
-  option: (base, state) => ({
-    ...base,
-    fontSize: "16px",
-    color: "var(--light-text)",
-    backgroundColor: state.isSelected
-      ? "var(--blue)"
-      : state.isFocused
-      ? "var(--dark-green)"
-      : "var(--dark)",
-  }),
-};
-
 const App = () => {
-  const [songOrArtist, setSongOrArtist] = useState(null);
-  const [artists, setArtists] = useState([]);
+  const [currentStepIndex, setCurrentStepIndex] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const artistRes = await genArtists();
-      setArtists(artistRes);
-    };
-    fetchData();
-  }, []);
+  const onStepEnter = ({ data }) => {
+    setCurrentStepIndex(data);
+  };
 
   return (
     <div className="App">
-      <div className="App-escape">press ESC to zoom out</div>
-      {/* <h1 className="App-header">What's your favorite artist spitting?</h1> */}
-      <div className="App-header">
-        What's
-        <Select
-          className="App-select"
-          autoFocus
-          placeholder="your favorite artist"
-          options={[...artists]}
-          value={songOrArtist}
-          onChange={setSongOrArtist}
-          styles={customStyles}
-        />
-        spitting?
-      </div>
-      <Bubbles songOrArtist={songOrArtist} setSongOrArtist={setSongOrArtist} />
+      <Scrollama onStepEnter={onStepEnter}>
+        <Step data={0} key={0} style={{
+                opacity: currentStepIndex === 0 ? 1 : 0.2,
+              }}>
+          <div className='App-step'>
+            <IntroStep />
+          </div>
+        </Step>
+        {/*
+        <Step data={1} key={1}>
+          <Step1 currentStepIndex={currentStepIndex} data={1}/>
+        </Step> */}
+        <Step data={2} key={2}>
+          <div className='App-step' style={{
+                opacity: currentStepIndex === 2 ? 1 : 0.2,
+              }}>
+            <Step2a />
+          </div>
+        </Step>
+        <Step data={3} key={3}>
+          <div className='App-step' style={{
+                opacity: currentStepIndex === 3 ? 1 : 0.2,
+              }}>
+            <Step2b />
+          </div>
+        </Step>
+        <Step data={4} key={4}>
+          <div className='App-step' style={{
+                opacity: currentStepIndex === 4 ? 1 : 0.2,
+              }}>
+            <Step2c />
+          </div>
+        </Step>
+        <Step data={5} key={5}>
+          <div className='App-step' style={{
+                opacity: currentStepIndex === 5 ? 1 : 0.2,
+              }}>
+            <Step2d />
+          </div>
+        </Step>
+        <Step data={6} key={6}>
+          <div className='App-step'
+            style={{
+              padding: 0,
+              opacity: currentStepIndex === 6 ? 1 : 0.2,
+            }}
+          >
+            <BubbleStep />  
+          </div>
+        </Step>
+      </Scrollama>
     </div>
   );
 };

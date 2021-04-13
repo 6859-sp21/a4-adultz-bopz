@@ -31,7 +31,7 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
 
     if (d.depth === 0) {
       // artist level
-      textValue = "";
+      //textValue = "";
       if (shouldUpdate) setSongOrArtist(VIEW_ALL_OPTION);
     } else if (d.depth === 1) {
       // bad word level
@@ -42,20 +42,28 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
           type: "artist",
         });
       }
-      textValue = `Censored words in Kidz Bop songs by ${d.data.name}:`;
+      //textValue = `Censored words in Kidz Bop songs by ${d.data.name}:`;
     } else if (d.depth === 2) {
       // song level
-      textValue = `Songs that ${d.parent.data.name} say(s) '${d.data.name}':`;
-    }
+      textValue = `Songs that ${d.parent.data.name} say(s) '${d.data.name}'`;
+    } else if (d.depth === 3) {
+      textValue = `Songs that ${d.parent.parent.data.name} say(s) '${d.parent.data.name}'`;
+    } 
+
+    d3.select("#selectedAllArtist")
+      .style("font-weight", d.depth === 0 ? 400 : 200)
+      .style("border-left", d.depth === 0 ? "var(--light-green) solid 2px" : 'none')
+      .text('All Artists');
 
     d3.select("#selectedArtistName")
-      .transition()
-      .duration(200)
-      .style("opacity", textValue === "" ? 0 : 1);
+      .style("font-weight", d.depth === 1 ? 400 : 200)
+      .style("border-left", d.depth === 1 ? "var(--light-green) solid 2px" : 'none')
+      .text(d.depth === 1 ? `Words altered in Kidz Bop songs by ${d.data.name}` : "Artist");
 
-    if (textValue) {
-      d3.select("#selectedArtistName").text(textValue);
-    }
+    d3.select("#selectedBadWord")
+      .style("font-weight", d.depth === 2 || d.depth === 3 ? 400 : 200)
+      .style("border-left", d.depth === 2 || d.depth === 3 ? "var(--light-green) solid 2px" : 'none')
+      .text(d.depth === 2 || d.depth === 3 ? textValue : "Altered Word");
   };
 
   const shouldShowLabel = (d) => {
@@ -235,31 +243,28 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
         .style("border-radius", "4px");
 
       // description text
-      d3.select("#selectedArtistName")
-        .style("font-weight", "200")
-        .style("text-align", "center")
-        .style("margin-top", "0")
-        .style("color", "var(--light-text)")
-        .style("opacity", "0")
-        .text("All Artists");
+      d3.select("#selectedAllArtist")
+        .style("font-weight", "400")
+        .style("border-left", "var(--light-green) solid 2px");
 
       // Lyric breakdown
-      d3.select("body")
+      d3.select("#svg-container")
         .append("div")
         .attr("id", "lyrics")
         .style("z-index", "-10")
-        .style("position", "absolute")
+        .style("position", "fixed")
         .style("opacity", "0")
         .style("width", "40vw")
         .style("height", "60vh")
-        .style("left", "30%")
-        .style("top", "20%")
-        .style("overflow", "scroll")
+        .style("left", "50%")
+        .style("top", "50%")
+        .style("overflow", "auto")
         .style("color", "var(--light-text)")
         .style("font", "16px Lato")
         .style("background-color", "var(--dark-secondary)")
         .style("padding", "24px")
-        .style("border-radius", "12px");
+        .style("border-radius", "12px")
+        .style("transform",  "translate(-50%, -50%)");
 
       d3.select("#lyrics")
         .append("button")
@@ -395,13 +400,19 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
 
   return (
     <>
-      <h3 id="selectedArtistName"></h3>
+      <div>
+        <h3 className="Bubbles-layer" id="selectedAllArtist">All Artists</h3>
+        <h3 className="Bubbles-layer" id="selectedArtistName">Artist</h3>
+        <h3 className="Bubbles-layer" id="selectedBadWord">Altered Word</h3>
+      </div>
+      <div id="svg-container" style={{width: "100%"}}>
       <svg
         className="d3-component"
         width="100%"
         height="100%"
         ref={d3Container}
       />
+      </div>
     </>
   );
 };

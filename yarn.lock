@@ -9589,6 +9589,11 @@
   optionalDependencies:
     "fsevents" "^2.1.3"
 
+"react-scrollama@^2.2.16":
+  "integrity" "sha512-rkd05GPuzqFPypRyxI5wUnNilzqybDTODGCoY7UKQ7sl4mpjzREeQ6BT2Hvq4r4DSQPB7aix8r4ibWaZAXVG4g=="
+  "resolved" "https://registry.npmjs.org/react-scrollama/-/react-scrollama-2.2.16.tgz"
+  "version" "2.2.16"
+
 "react-select@^4.3.0":
   "integrity" "sha512-SBPD1a3TJqE9zoI/jfOLCAoLr/neluaeokjOixr3zZ1vHezkom8K0A9J4QG9IWDqIDE9K/Mv+0y1GjidC2PDtQ=="
   "resolved" "https://registry.npmjs.org/react-select/-/react-select-4.3.0.tgz"
