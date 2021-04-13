@@ -43,41 +43,41 @@ export const Step2 = () => (
 );
 
 export const Step2a = () => (
-  <>
+  <div className='Step2'>
     <h2 className="Step2-p">
       All the songs by a certain artist are grouped together in a bubble with a
       label of their name. For smaller artists, you can hover over their bubble
       to see which artist it is.
     </h2>
     <img class="center-image" src={Demo0} />
-  </>
+  </div>
 );
 
 export const Step2b = () => (
-  <>
+  <div className='Step2'>
     <h2 className="Step2-p">
       Clicking on an artists bubble takes you inside to show all the songs by a
       certain artist grouped by their altered or censored word.
     </h2>
     <img class="center-image" src={Demo1} />
-  </>
+  </div>
 );
 
 export const Step2c = () => (
-  <>
+  <div className='Step2'>
     <h2 className="Step2-p">
       Clicking on an word bubble shows all the songs from that artist with the
       censored word you clicked.
     </h2>
     <img class="center-image" src={Demo2} />
-  </>
+  </div>
 );
 
 export const Step2d = () => (
-  <>
+  <div className='Step2'>
     <h2 className="Step2-p">
       You can click on each song to reveal the original and Kids Bop lyrics.
     </h2>
     <img class="center-image" src={Demo3} />
-  </>
+  </div>
 );
