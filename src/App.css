@@ -52,3 +52,17 @@ body {
 .App-step-text-center {
     text-align: center;
 }
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #fff1;
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: none;
+  }

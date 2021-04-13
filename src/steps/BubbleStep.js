@@ -88,7 +88,7 @@ const BubbleStep = ({shouldFocus}) => {
         spitting?
       </div>
       <div className="App-header">
-        <Bubbles songOrArtist={songOrArtist} setSongOrArtist={setSongOrArtist} />
+        <Bubbles shouldFocus={shouldFocus} songOrArtist={songOrArtist} setSongOrArtist={setSongOrArtist} />
       </div>
       <div className="App-data">data from The Pudding (https://github.com/the-pudding/data/tree/master/kidz-bop)</div>
     </div>

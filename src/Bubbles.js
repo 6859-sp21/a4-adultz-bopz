@@ -20,18 +20,19 @@ const color = [null, scale1, scale2, scale3, scale3];
 
 let svg, view, label, node, focus;
 
-const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
+const Bubbles = ({ songOrArtist, setSongOrArtist, shouldFocus }) => {
   const [root, setRoot] = useState(null);
 
   const d3Container = useRef(null);
 
   // don't call setSongOrArtist if title update is due to props change
   const updateArtistTitle = (d, shouldUpdate) => {
-    let textValue;
+    let artistSelected;
+    let wordSelected;
+    let songSelected;
 
     if (d.depth === 0) {
       // artist level
-      //textValue = "";
       if (shouldUpdate) setSongOrArtist(VIEW_ALL_OPTION);
     } else if (d.depth === 1) {
       // bad word level
@@ -42,28 +43,42 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
           type: "artist",
         });
       }
-      //textValue = `Censored words in Kidz Bop songs by ${d.data.name}:`;
+      artistSelected = "Artist: " + d.data.name;
+      wordSelected = `Words altered in Kidz Bop songs by ${d.data.name}`;
     } else if (d.depth === 2) {
       // song level
-      textValue = `Songs that ${d.parent.data.name} say(s) '${d.data.name}'`;
+      artistSelected = "Artist: " + d.parent.data.name;
+      wordSelected = "Word: " + d.data.name;
+      songSelected = `Songs that ${d.parent.data.name} say(s) '${d.data.name}'`;
     } else if (d.depth === 3) {
-      textValue = `Songs that ${d.parent.parent.data.name} say(s) '${d.parent.data.name}'`;
+      artistSelected = "Artist: " + d.parent.parent.data.name;
+      wordSelected = "Word: " + d.parent.data.name;
+      songSelected = "Song: " + d.data.name;
     } 
 
     d3.select("#selectedAllArtist")
       .style("font-weight", d.depth === 0 ? 400 : 200)
-      .style("border-left", d.depth === 0 ? "var(--light-green) solid 2px" : 'none')
-      .text('All Artists');
+      .style("border-left", d.depth === 0 ? "var(--light-green) solid 2px" : "none")
+      .text(artistSelected ? artistSelected : "All Artists");
 
     d3.select("#selectedArtistName")
       .style("font-weight", d.depth === 1 ? 400 : 200)
-      .style("border-left", d.depth === 1 ? "var(--light-green) solid 2px" : 'none')
-      .text(d.depth === 1 ? `Words altered in Kidz Bop songs by ${d.data.name}` : "Artist");
+      .style("border-left", d.depth === 1 ? "var(--light-green) solid 2px" : "none")
+      .text(wordSelected ? wordSelected : "Words");
 
     d3.select("#selectedBadWord")
-      .style("font-weight", d.depth === 2 || d.depth === 3 ? 400 : 200)
-      .style("border-left", d.depth === 2 || d.depth === 3 ? "var(--light-green) solid 2px" : 'none')
-      .text(d.depth === 2 || d.depth === 3 ? textValue : "Altered Word");
+      .style("font-weight", d.depth === 2 ? 400 : 200)
+      .style("border-left", d.depth === 2 ? "var(--light-green) solid 2px" : "none")
+      .text(songSelected ? songSelected : "Songs");
+
+    d3.select("#selectedSong")
+      .style("font-weight", d.depth === 3 ? 400 : 200)
+      .style("border-left", d.depth === 3 ? "var(--light-green) solid 2px" : "none")
+      .text(
+        d.depth === 3
+          ? `Lyrics in '${d.data.name}' where the word '${d.parent.data.name}' is altered`
+          : "Lyrics"
+      );
   };
 
   const shouldShowLabel = (d) => {
@@ -129,6 +144,12 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (!shouldFocus && focus && focus.depth == 2) {
+      closeLyrics()
+    }
+  }, [shouldFocus]);
 
   /* The useEffect Hook is for running side effects outside of React,
        for instance inserting elements into the DOM using D3 */
@@ -274,11 +295,7 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
         .text("x")
         .on("click", () => {
           // Close lyric pop-up
-          d3.select("#lyrics")
-            .transition()
-            .duration(200)
-            .style("z-index", -10)
-            .style("opacity", 0);
+          closeLyrics();
         });
 
       d3.select("#lyrics")
@@ -310,6 +327,7 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
       .duration(200)
       .style("opacity", 0)
       .style("z-index", -10);
+    updateArtistTitle(focus, false);
   };
 
   const handleEscape = (e) => {
@@ -327,17 +345,18 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
   const generateLyricRow = (data) => {
     let ogHeader = `<b>${data.ogArtist}</b><br />`;
     let ogLyricHTML =
-      '<div class="Bubbles-ogLyric">"' + data.ogLyricHTML + '"</div>';
+      '<div class="Bubbles-ogLyric">' + data.ogLyricHTML + "</div>";
 
     let kbHeader = "<b style='float:right'>Kidz Bop</b><br />";
-    let kbLyricHTML = '<div class="Bubbles-kbLyric">"' + data.kbLyricHTML + '"</div>';
+    let kbLyricHTML =
+      '<div class="Bubbles-kbLyric">' + data.kbLyricHTML + "</div>";
 
     return (
       "<div style='width:45%'>" +
       ogHeader +
       ogLyricHTML +
       "</div>" +
-      "<div class='Bubbles-arrow'>--></div>" +
+      "<div class='Bubbles-arrow'>\u2192</div>" +
       "<div style='width:45%'>" +
       kbHeader +
       kbLyricHTML +
@@ -399,8 +418,9 @@ const Bubbles = ({ songOrArtist, setSongOrArtist }) => {
     <>
       <div>
         <h3 className="Bubbles-layer" id="selectedAllArtist">All Artists</h3>
-        <h3 className="Bubbles-layer" id="selectedArtistName">Artist</h3>
-        <h3 className="Bubbles-layer" id="selectedBadWord">Altered Word</h3>
+        <h3 className="Bubbles-layer" id="selectedArtistName">Words</h3>
+        <h3 className="Bubbles-layer" id="selectedBadWord">Songs</h3>
+        <h3 className="Bubbles-layer" id="selectedSong">Lyrics</h3>
       </div>
       <div id="svg-container" style={{width: "100%"}}>
       <svg

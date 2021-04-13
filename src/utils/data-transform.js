@@ -8,7 +8,7 @@ export const genRawData = async () => {
 
 export const genNestedData = async () => {
   const csvData = await genRawData();
-  let groupedByArtist = Array.from(d3.group(csvData, (d) => d.ogArtist)).slice(0, 2).map(
+  let groupedByArtist = Array.from(d3.group(csvData, (d) => d.ogArtist)).map(
     (item) => {
       let groupedByBadword = Array.from(
         d3.group(item[1], (d) => d.badword)
@@ -77,24 +77,35 @@ const convertArrayToJSON = (arr) => Object.assign(...arr.map((k) => ({[k]: 0})))
 
 const getFormattedOGLyricAsHTML = (ogLyricWordArray, badword) => {
   return ogLyricWordArray.map((ogWord) => {
-    return "<span class='ogLyric-" + ((ogWord.includes(badword)) ? 'bad' : 'good') + "'>" + ogWord + "</span>";
+    return "<span class='ogLyric-" + (ogWord.toLowerCase().includes(badword) ? 'bad' : 'good') + "'>" + ogWord + "</span>";
   }).join(" ");
 }
 
 const getFormattedKBLyricAsHTML = (ogLyricWordObj, kbLyricWordArray) => {
-  return kbLyricWordArray.map((kbWord) => {
+  let prev = true; // true if same, false if altered
+  return kbLyricWordArray.map((kbWord, i) => {
     
     // Check if KB Word exists in OG Lyric
     let kbWordInOGLyric = ogLyricWordObj[kbWord] !== undefined;
 
     if( kbWordInOGLyric ){
       // Word is in both OG and KB Lyric
-      return "<span class='kblyric-same'>" + kbWord + "</span> ";
+      // if prev word was a altered lyric, close the span
+      let prefix = !prev 
+        ? "</span><span class='kblyric-same start'>" 
+        : "<span class='kblyric-same'>"
+      prev = true
+      return prefix + kbWord + "</span> ";
       
     } else {
       // kbWord is not in og lyric
       // CHANGE
-      return "<span class='kblyric-different'>" + kbWord + "</span> ";
+      // if it is the last word in the word array, close the span if the previous word is a altered word
+      let suffix = !prev && kbLyricWordArray.length - 1 == i ? "</span>" : ""
+      // if the previous word is a different word, don't start the span
+      let prefix = prev ? "<span class='kblyric-different'>" : ""
+      prev = false
+      return prefix + kbWord + suffix;
     }
   }).join(" ");
 
