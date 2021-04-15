@@ -1,0 +1,68 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap");
+:root {
+    --dark: rgb(29, 33, 37);
+    --dark-secondary: #334e68;
+    --dark-text: #8c9095;
+    --light-text: #f0f4f8;
+    --dark-green: rgb(36, 158, 115);
+    --light-green: rgb(133, 221, 183);
+    --blue: rgb(17, 190, 221);
+    --light-purple: #e1c7e0;
+    --dark-purple: #c054be;
+}
+
+body {
+    background-color: var(--dark);
+    font-family: "Lato";
+    margin: 0;
+    overflow-x: hidden;
+}
+
+.App-header {
+    /* font-size: 20px; */
+    color: var(--light-text);
+    padding: 36px;
+    padding-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.App-select {
+    padding: 8px;
+    width: 20%;
+}
+
+.App-escape {
+    padding: 8px;
+    text-align: right;
+    color: var(--dark-text);
+}
+
+.App-data {
+    padding: 8px;
+    text-align: left;
+    color: var(--dark-text);
+}
+
+.App-step {
+    color: white;
+}
+
+.App-step-text-center {
+    text-align: center;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #fff1;
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: none;
+  }
